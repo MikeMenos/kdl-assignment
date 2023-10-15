@@ -2,7 +2,7 @@ import type { FC } from "react";
 import type { ButtonInterface } from "../../../interfaces";
 import Button from "./Button";
 
-const Cancel: FC<ButtonInterface> = ({
+const CancelButton: FC<ButtonInterface> = ({
   onClick,
   className,
   disabled = false,
@@ -19,4 +19,4 @@ const Cancel: FC<ButtonInterface> = ({
   );
 };
 
-export default Cancel;
+export default CancelButton;

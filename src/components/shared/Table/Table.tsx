@@ -3,14 +3,15 @@ import { useTable, useGlobalFilter, usePagination } from "react-table";
 import type { TableProps } from "../../../interfaces";
 import Pagination from "./Pagination";
 import ToolBar from "./Toolbar";
+import Loader from "../Loader";
 
 function Table<T extends object>({
   columns,
   data,
   toolbarEnabled = true,
   onAdd,
-  dataSliced = false,
-  name,
+  isError,
+  isLoading,
 }: TableProps<T>): ReactElement {
   const {
     getTableProps,
@@ -40,8 +41,7 @@ function Table<T extends object>({
     useGlobalFilter,
     usePagination
   );
-
-  const [filterValue, setFilterValue] = useState<string>("");
+  const [filterValue, setFilterValue] = useState("");
 
   const handleFilterInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.currentTarget;
@@ -50,7 +50,7 @@ function Table<T extends object>({
   };
   return (
     <>
-      <div className="flex flex-grow flex-col">
+      <div className="flex flex-grow flex-col overflow-x-auto">
         {toolbarEnabled && (
           <ToolBar
             {...{ onAdd, handleFilterInputChange }}
@@ -59,7 +59,6 @@ function Table<T extends object>({
             setFilterValue={setFilterValue}
           />
         )}
-
         <table {...getTableProps({ className: "mt-8" })}>
           <thead>
             {headerGroups.map((headerGroup, i) => (
@@ -77,7 +76,6 @@ function Table<T extends object>({
                     key={x}
                   >
                     {column.render("Header")}
-                    {/* Render the columns filter UI */}
                   </th>
                 ))}
               </tr>
@@ -86,7 +84,6 @@ function Table<T extends object>({
           <tbody {...getTableBodyProps()}>
             {page.map((row, i) => {
               prepareRow(row);
-
               return (
                 <tr
                   {...row.getRowProps({ className: "hover:bg-secondary" })}
@@ -112,13 +109,6 @@ function Table<T extends object>({
             })}
           </tbody>
         </table>
-      </div>
-      {data.length === 0 && (
-        <div className="my-40 text-center">
-          <h3>No Data Available</h3>
-        </div>
-      )}
-      {!dataSliced && name !== "categories-table" && (
         <Pagination
           canPreviousPage={canPreviousPage}
           canNextPage={canNextPage}
@@ -132,6 +122,21 @@ function Table<T extends object>({
           pageIndex={pageIndex}
           dataLength={data.length}
         />
+      </div>
+      {data.length === 0 && (
+        <div className="my-40 text-center">
+          <h3>No Data Available</h3>
+        </div>
+      )}
+      {isLoading && (
+        <div className="my-40 text-center">
+          <Loader />
+        </div>
+      )}
+      {isError && (
+        <div className="my-40 text-center">
+          <h3>Oops, data could not be fetched. Something went wrong.</h3>
+        </div>
       )}
     </>
   );

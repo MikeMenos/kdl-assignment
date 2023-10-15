@@ -1,36 +1,55 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Table from "../components/shared/Table/Table";
 import AppDrawer from "../components/shared/AppDrawer";
 import type { Column, Row } from "react-table";
 import EditButton from "../components/shared/buttons/EditButton";
 import DeleteButton from "../components/shared/buttons/DeleteButton";
-import Loader from "../components/shared/Loader";
 import UserForm from "../components/Users/UserForm";
 import { errorToast, successToast } from "../components/shared/toast/toasts";
 import { useMutation, useQueryClient } from "react-query";
 import useGetUsers from "../hooks/useGetUsers";
 import axios from "axios";
 import { BASE_URL } from "../misc/constants";
+import { isMobileOnly, isTablet } from "react-device-detect";
+import DeleteConfirmationModal from "@/components/shared/modals/DeleteModal";
+
+export interface RecordI {
+  id: number | null;
+  name: string;
+  email: string;
+  company: { name: string };
+}
+
+export const initialRecordState = {
+  id: null,
+  name: "",
+  email: "",
+  company: { name: "" },
+};
 
 export default function Home() {
   const queryClient = useQueryClient();
   const [showDrawer, setShowDrawer] = useState(false);
-  const [record, setRecord] = useState<Row["original"]>({
-    id: null,
-    name: "",
-    email: "",
-    companyName: "",
-  });
+  const [record, setRecord] = useState<RecordI>(initialRecordState);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [mockMoreUsers, setMockMoreUsers] = useState<RecordI[]>([]);
 
   const { users, isLoading, isError } = useGetUsers();
 
+  useEffect(() => {
+    if (users) {
+      setMockMoreUsers(
+        mockMoreUsers.concat(users, users.slice(-10).reverse(), users)
+      );
+    }
+  }, [users]);
+
+  //Create User
   const { isLoading: isCreateUserLoading, mutate: createUser } = useMutation(
     async () => {
       return await axios.post(`${BASE_URL}/users`, {
-        //@ts-ignore
         name: record.name,
-        //@ts-ignore
-        company: record.companyName,
+        company: record.company.name,
       });
     },
     {
@@ -49,15 +68,12 @@ export default function Home() {
     }
   );
 
+  //Edit User
   const { isLoading: isEditUserLoading, mutate: editUser } = useMutation(
     async () => {
-      //@ts-ignore
       return await axios.put(`${BASE_URL}/users/${record.id}`, {
-        //@ts-ignore
         name: record.name,
-        //@ts-ignore
-        company: record.companyName,
-        //@ts-ignore
+        company: { ...record.company, name: record.company.name },
         id: record.id,
       });
     },
@@ -77,17 +93,21 @@ export default function Home() {
     }
   );
 
+  //Delete User
   const { mutate: remove, isLoading: isRemoveUserLoading } = useMutation(
-    async () => {
-      //@ts-ignore
-      return await axios.delete(`${BASE_URL}/users/${record.id}`);
+    async (id) => {
+      return await axios.delete(`${BASE_URL}/users/${id}`);
     },
     {
+      onMutate: () => {
+        // Show the delete confirmation modal
+        setDeleteModalOpen(true);
+      },
       onSuccess: () => {
         void queryClient.invalidateQueries().then(() => {
-          successToast(`Record was deleted successfully!`);
+          successToast(`User was deleted successfully!`);
         });
-        onClose();
+        setDeleteModalOpen(false);
         queryClient.invalidateQueries();
       },
       onError: () => {
@@ -101,29 +121,48 @@ export default function Home() {
   };
 
   const onEdit = (row: Row) => {
-    setRecord(row.original);
+    setRecord((state) => ({
+      ...state,
+      //@ts-ignore
+      name: row.original.name,
+      //@ts-ignore
+      id: row.original.id,
+      //@ts-ignore
+      email: row.original.email,
+      //@ts-ignore
+      company: { ...state.company, name: row.original.name },
+    }));
     setShowDrawer(true);
   };
 
-  const onDelete = (row: Row) => {
-    // @ts-ignore
-    void remove({ id: row.original.id });
+  const onConfirmDelete = () => {
+    //@ts-ignore
+    void remove(record.id);
+    setDeleteModalOpen(false);
   };
 
   const onClose = () => {
     setShowDrawer(false);
-    setRecord({});
+    setRecord(initialRecordState);
+  };
+
+  const onCloseDeleteModal = () => {
+    setDeleteModalOpen(false);
+  };
+  const onOpenDeleteModal = (row: RecordI) => {
+    setDeleteModalOpen(true);
+    setRecord({ ...record, id: row.id });
   };
 
   const userColumns: Column[] = [
     { Header: "Id", accessor: "id" },
     {
       accessor: "name",
-      Header: "Receiver",
+      Header: "Name",
     },
     {
       accessor: "email",
-      Header: "Category",
+      Header: "Email",
     },
     {
       accessor: "company.name",
@@ -133,49 +172,58 @@ export default function Home() {
       Header: "Actions",
       accessor: "actions",
       Cell: ({ row }) => (
-        <>
+        <div className="flex justify-center">
           <EditButton
             onClick={() => onEdit(row)}
             onlyIcon
-            className="mr-3"
+            className="md:mr-3 mr-2"
             loading={isEditUserLoading}
           />
           <DeleteButton
-            onClick={() => onDelete(row)}
+            onClick={() => onOpenDeleteModal(row)}
             onlyIcon
-            className="ml-3"
-            loading={isRemoveUserLoading}
+            className="md:ml-3 ml-2"
           />
-        </>
+        </div>
       ),
     },
   ];
 
   const columns = useMemo(() => userColumns, []);
 
-  if (isLoading) return <Loader />;
-
   return (
-    <div className="flex flex-col">
-      <h1 className="mb-4">Users</h1>
-      <Table
-        columns={columns}
-        data={users}
-        onAdd={onAdd}
-        name="transactions-table"
-      />
-      <AppDrawer show={showDrawer} onClose={onClose}>
+    <div className="flex flex-col w-full">
+      <h1 className="mb-4 text-center">Users List</h1>
+      <div className="min-h-[750px]">
+        <Table
+          columns={columns}
+          data={mockMoreUsers}
+          onAdd={onAdd}
+          isError={isError}
+          isLoading={isLoading}
+        />
+      </div>
+      <AppDrawer
+        show={showDrawer}
+        onClose={onClose}
+        //if you switch to responsive mode in Dev Tools, please refresh the page first for this to apply
+        width={isMobileOnly ? "100%" : isTablet ? "40%" : "25%"}
+      >
         <UserForm
           record={record}
           setRecord={setRecord}
           editUser={editUser}
           createUser={createUser}
           onClose={onClose}
-          isLoading={
-            isRemoveUserLoading || isEditUserLoading || isCreateUserLoading
-          }
+          isLoading={isEditUserLoading || isCreateUserLoading}
         />
       </AppDrawer>
+      <DeleteConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onCloseDeleteModal={onCloseDeleteModal}
+        onConfirmDelete={onConfirmDelete}
+        loading={isRemoveUserLoading}
+      />
     </div>
   );
 }

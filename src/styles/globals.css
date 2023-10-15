@@ -84,26 +84,6 @@ table {
   background-color: #13192a;
 }
 
-.wave {
-  position: relative;
-  min-height: 150px;
-  background-color: #3e606f;
-  overflow: hidden;
-}
-
-.wave::before,
-.wave::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  min-width: 300vw;
-  min-height: 300vw;
-  background-color: #fcfff5;
-  animation-name: rotate;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
-}
-
 svg {
   border-radius: 0.5rem;
 }

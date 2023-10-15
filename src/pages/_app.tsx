@@ -14,12 +14,12 @@ export default function App({ Component, pageProps }: AppProps) {
   });
   return (
     <QueryClientProvider client={queryClient}>
-      <main className="bg-main p-10 min-h-[100vh]">
+      <main className="bg-main p-10 min-h-[100vh] flex items-center justify-center">
         <Component {...pageProps} />
         <Toaster
           toastOptions={{
             success: {
-              duration: 3000,
+              duration: 4000,
               style: { padding: "1rem" },
             },
             error: {

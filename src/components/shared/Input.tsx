@@ -18,7 +18,7 @@ const Input: FC<InputInterface> = ({
   const formattedPlaceholder = required ? placeholder + "*" : placeholder;
 
   return (
-    <div className="relative flex items-center pb-4">
+    <div className="relative flex items-center">
       <i className="absolute pl-1">{icon}</i>
       {value && <i className="absolute right-0 pr-2">{closeIcon}</i>}
       <div className="flex w-full flex-col">

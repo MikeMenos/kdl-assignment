@@ -52,12 +52,14 @@ export interface ButtonInterface extends ChildrenType {
 export interface TableProps<T extends object> {
   columns: Column<T>[];
   data: T[];
-  name: string;
+  name?: string;
   onAdd?: VoidFunction;
   onClick?: (row: Row<T>) => void;
   style?: CSSProperties;
   toolbarEnabled?: boolean;
   dataSliced?: boolean;
+  isError: boolean;
+  isLoading:boolean;
 }
 
 export interface TableToolbarProps<T extends Record<string, unknown>> {
@@ -79,19 +81,6 @@ export interface DrawerInterface extends ChildrenType {
   className?: string;
   style?: CSSProperties;
 }
-
-export interface SelectorPropsInterface {
-  value: {
-    label: string;
-    value: string;
-  };
-  name: string;
-  onChange: any;
-  placeholder?: string;
-  required?: boolean;
-  className?: string;
-}
-
 export interface PaginationPropsInterface {
   canPreviousPage: boolean;
   canNextPage: boolean;

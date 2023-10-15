@@ -3,14 +3,17 @@ import {
   type FC,
   type SetStateAction,
   type Dispatch,
+  useState,
 } from "react";
 import Form from "../shared/Form";
 import Input from "../shared/Input";
 import { type Row } from "react-table";
+import { updateObjectValues } from "@/utils/updateObjectValues";
+import { RecordI } from "@/pages";
 
 interface PropsInterface {
   record: Row["original"];
-  setRecord: Dispatch<SetStateAction<object>>;
+  setRecord: Dispatch<SetStateAction<RecordI>>;
   onClose: VoidFunction;
   editUser?: any;
   createUser?: any;
@@ -26,21 +29,19 @@ const UserForm: FC<PropsInterface> = ({
   isLoading,
 }) => {
   // @ts-ignore
-  const { name, id = "", email, companyName } = record;
+  const { name, id, email, company } = record;
 
-  const onInputChange = (e: SyntheticEvent) => {
-    const { value, name } = e.target as HTMLInputElement;
-
-    setRecord((state) => ({
-      ...state,
-      [name]: value,
-    }));
+  const handleInputChange = (path: string, value: string) => {
+    setRecord((state) => updateObjectValues(state, path, value));
   };
-
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
-
-    //create or edit logic
+    //@ts-ignore
+    if (id) {
+      editUser(record);
+    } else {
+      createUser(record);
+    }
   };
 
   return (
@@ -53,32 +54,29 @@ const UserForm: FC<PropsInterface> = ({
       <div className="mt-20 w-full">
         <Input
           placeholder="Name"
-          // @ts-ignore
-          value={record?.name ?? ""}
+          value={name ?? ""}
           type="text"
-          onChange={onInputChange}
+          onChange={(e) => handleInputChange("name", e.target.value)}
           className="mt-10 w-full rounded-xl bg-secondary p-2 outline-none"
           name="name"
           required
         />
         <Input
           placeholder="Email"
-          // @ts-ignore
-          value={record?.email ?? ""}
+          value={email ?? ""}
           type="email"
-          onChange={onInputChange}
+          onChange={(e) => handleInputChange("email", e.target.value)}
           className="mt-10 w-full rounded-xl bg-secondary p-2 outline-none"
           name="email"
           required
         />
         <Input
           placeholder="Company Name"
-          // @ts-ignore
-          value={record?.companyName ?? ""}
+          value={company?.name ?? ""}
           type="text"
-          onChange={onInputChange}
+          onChange={(e) => handleInputChange("company.name", e.target.value)}
           className="mt-10 w-full rounded-xl bg-secondary p-2 outline-none"
-          name="companyName"
+          name="company"
           required
         />
       </div>
