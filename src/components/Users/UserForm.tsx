@@ -9,7 +9,7 @@ import Form from "../shared/Form";
 import Input from "../shared/Input";
 import { type Row } from "react-table";
 import { updateObjectValues } from "@/utils/updateObjectValues";
-import { RecordI } from "@/pages";
+import { RecordI } from "@/interfaces";
 
 interface PropsInterface {
   record: Row["original"];

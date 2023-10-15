@@ -94,3 +94,10 @@ export interface PaginationPropsInterface {
   pageSize: number;
   dataLength: number;
 }
+
+export interface RecordI {
+  id: number | null;
+  name: string;
+  email: string;
+  company: { name: string };
+}

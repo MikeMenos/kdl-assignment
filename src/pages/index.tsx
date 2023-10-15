@@ -12,13 +12,7 @@ import axios from "axios";
 import { BASE_URL } from "../misc/constants";
 import { isMobileOnly, isTablet } from "react-device-detect";
 import DeleteConfirmationModal from "@/components/shared/modals/DeleteModal";
-
-export interface RecordI {
-  id: number | null;
-  name: string;
-  email: string;
-  company: { name: string };
-}
+import { RecordI } from "@/interfaces";
 
 export const initialRecordState = {
   id: null,
