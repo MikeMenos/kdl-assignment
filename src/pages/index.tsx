@@ -100,7 +100,6 @@ export default function Home() {
     },
     {
       onMutate: () => {
-        // Show the delete confirmation modal
         setDeleteModalOpen(true);
       },
       onSuccess: () => {
