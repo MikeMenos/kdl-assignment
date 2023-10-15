@@ -1,18 +1,18 @@
-import { useMemo, useState } from "react";
-import Table from "../components/shared/Table/Table";
-import AppDrawer from "../components/shared/AppDrawer";
+import { type FC, useMemo, useState } from "react";
+import Table from "../shared/Table/Table";
+import AppDrawer from "../shared/AppDrawer";
 import type { Column, Row } from "react-table";
-import EditButton from "../components/shared/buttons/EditButton";
-import DeleteButton from "../components/shared/buttons/DeleteButton";
-import Loader from "../components/shared/Loader";
-import UserForm from "../components/Users/UserForm";
-import { errorToast, successToast } from "../components/shared/toast/toasts";
+import EditButton from "../shared/buttons/EditButton";
+import DeleteButton from "../shared/buttons/DeleteButton";
+import Loader from "../shared/Loader";
+import UserForm from "../../components/Users/UserForm";
+import { errorToast, successToast } from "../../components/shared/toast/toasts";
 import { useMutation, useQueryClient } from "react-query";
-import useGetUsers from "../hooks/useGetUsers";
+import useGetUsers from "../../hooks/useGetUsers";
 import axios from "axios";
-import { BASE_URL } from "../misc/constants";
+import { BASE_URL } from "../../misc/constants";
 
-export default function Home() {
+const Users: FC = () => {
   const queryClient = useQueryClient();
   const [showDrawer, setShowDrawer] = useState(false);
   const [record, setRecord] = useState<Row["original"]>({
@@ -30,6 +30,7 @@ export default function Home() {
         //@ts-ignore
         name: record.name,
         //@ts-ignore
+
         company: record.companyName,
       });
     },
@@ -178,4 +179,6 @@ export default function Home() {
       </AppDrawer>
     </div>
   );
-}
+};
+
+export default Users;
