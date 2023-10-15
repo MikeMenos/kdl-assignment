@@ -22,8 +22,8 @@ const DeleteConfirmationModal = ({
   loading,
 }: {
   isOpen: boolean;
-  onCloseDeleteModal: () => void;
-  onConfirmDelete: () => void;
+  onCloseDeleteModal: VoidFunction;
+  onConfirmDelete: VoidFunction;
   loading: boolean;
 }) => {
   return (

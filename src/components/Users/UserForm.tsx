@@ -7,12 +7,11 @@ import {
 } from "react";
 import Form from "../shared/Form";
 import Input from "../shared/Input";
-import { type Row } from "react-table";
 import { updateObjectValues } from "@/utils/updateObjectValues";
 import { RecordI } from "@/interfaces";
 
 interface PropsInterface {
-  record: Row["original"];
+  record: RecordI;
   setRecord: Dispatch<SetStateAction<RecordI>>;
   onClose: VoidFunction;
   editUser?: any;
@@ -28,7 +27,6 @@ const UserForm: FC<PropsInterface> = ({
   onClose,
   isLoading,
 }) => {
-  // @ts-ignore
   const { name, id, email, company } = record;
 
   const handleInputChange = (path: string, value: string) => {
@@ -36,7 +34,6 @@ const UserForm: FC<PropsInterface> = ({
   };
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
-    //@ts-ignore
     if (id) {
       editUser(record);
     } else {
