@@ -109,6 +109,21 @@ function Table<T extends object>({
             })}
           </tbody>
         </table>
+        {data.length === 0 && !isLoading && (
+          <div className="my-40 text-center">
+            <h3>No Data Available</h3>
+          </div>
+        )}
+        {isLoading && (
+          <div className="my-40 text-center">
+            <Loader />
+          </div>
+        )}
+        {isError && (
+          <div className="my-40 text-center">
+            <h3>Oops, data could not be fetched. Something went wrong.</h3>
+          </div>
+        )}
         <Pagination
           canPreviousPage={canPreviousPage}
           canNextPage={canNextPage}
@@ -123,21 +138,6 @@ function Table<T extends object>({
           dataLength={data.length}
         />
       </div>
-      {data.length === 0 && (
-        <div className="my-40 text-center">
-          <h3>No Data Available</h3>
-        </div>
-      )}
-      {isLoading && (
-        <div className="my-40 text-center">
-          <Loader />
-        </div>
-      )}
-      {isError && (
-        <div className="my-40 text-center">
-          <h3>Oops, data could not be fetched. Something went wrong.</h3>
-        </div>
-      )}
     </>
   );
 }

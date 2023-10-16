@@ -4,6 +4,7 @@ import { BASE_URL } from "../misc/constants";
 
 const useGetUsers = () => {
   const getUsers = async () => {
+    await new Promise(resolve => setTimeout(resolve, 2000));
     return await axios(`${BASE_URL}/users`);
   };
 
