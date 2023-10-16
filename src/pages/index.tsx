@@ -41,6 +41,7 @@ export default function Home() {
   //Create User
   const { isLoading: isCreateUserLoading, mutate: createUser } = useMutation(
     async () => {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       return await axios.post(`${BASE_URL}/users`, {
         name: record.name,
         company: record.company.name,
@@ -65,6 +66,7 @@ export default function Home() {
   //Edit User
   const { isLoading: isEditUserLoading, mutate: editUser } = useMutation(
     async () => {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       return await axios.put(`${BASE_URL}/users/${record.id}`, {
         name: record.name,
         company: { ...record.company, name: record.company.name },
@@ -90,6 +92,7 @@ export default function Home() {
   //Delete User
   const { mutate: remove, isLoading: isRemoveUserLoading } = useMutation(
     async (id) => {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       return await axios.delete(`${BASE_URL}/users/${id}`);
     },
     {
