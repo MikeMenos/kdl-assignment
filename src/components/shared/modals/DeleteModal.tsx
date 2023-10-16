@@ -32,6 +32,7 @@ const DeleteConfirmationModal = ({
       onRequestClose={onCloseDeleteModal}
       contentLabel="Delete Confirmation"
       style={customStyles}
+      closeTimeoutMS={200}
     >
       <h2 className="text-center mb-2">Confirm Deletion</h2>
       <p className="text-center mb-6">

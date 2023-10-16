@@ -1,3 +1,7 @@
+# KDL Assignment
+
+This project uses Next.JS version 13 which you can find out more [here](https://nextjs.org):
+
 # How to setup
 
 In the project directory, to install the necessary dependencies, run:
