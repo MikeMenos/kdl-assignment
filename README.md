@@ -1,6 +1,6 @@
 # KDL Assignment
 
-This project uses Next.JS version 13 which you can find out more [here](https://nextjs.org):
+This project uses Next.JS version 13 on which you can find out more [here](https://nextjs.org):
 
 # How to setup
 
