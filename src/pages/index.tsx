@@ -100,9 +100,7 @@ export default function Home() {
         setDeleteModalOpen(true);
       },
       onSuccess: () => {
-        void queryClient.invalidateQueries().then(() => {
-          successToast(`User was deleted successfully!`);
-        });
+        successToast(`User was deleted successfully!`);
         setDeleteModalOpen(false);
         queryClient.invalidateQueries();
       },
